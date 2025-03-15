@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from .dependencies import get_api_key
 from .routers import categories, exercises, workouts, challenges
 from .database import engine
 from . import models
@@ -24,11 +25,11 @@ app.add_middleware(
 )
 
 # Routerek regisztrálása
-app.include_router(categories.categories_router)
-app.include_router(exercises.exercises_router)
-app.include_router(workouts.workouts_router)
-app.include_router(challenges.challenges_router)
+app.include_router(categories.categories_router, dependencies=[Depends(get_api_key)])
+app.include_router(exercises.exercises_router, dependencies=[Depends(get_api_key)])
+app.include_router(workouts.workouts_router, dependencies=[Depends(get_api_key)])
+app.include_router(challenges.challenges_router, dependencies=[Depends(get_api_key)])
 
-@app.get("/")
+@app.get("/", dependencies=[Depends(get_api_key)])
 def root():
     return {"message": "Üdvözöl a Workout API!"}
