@@ -61,7 +61,7 @@ class Challenge(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), index=True, nullable=False)
-    description = Column(String(500), nullable=True)  # New field
+    description = Column(String(500), nullable=True)
     count_reps = Column(Boolean, nullable=False)
     duration = Column(Integer, nullable=True)
     measurement_method = Column(String(50), nullable=False)

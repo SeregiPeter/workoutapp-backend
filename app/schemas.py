@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 from pydantic.config import ConfigDict
 
-# ----------- Category sémák -----------
+# ----------- Category schemas -----------
 class CategoryBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     description: Optional[str] = Field(None, max_length=500)
@@ -23,7 +23,7 @@ class Category(CategoryBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-# ----------- Exercise sémák -----------
+# ----------- Exercise schemas -----------
 
 class ExerciseBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
@@ -57,7 +57,7 @@ class Exercise(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-# ----------- Workout sémák -----------
+# ----------- Workout schemas -----------
 
 class WorkoutBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
@@ -101,7 +101,7 @@ class Workout(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-# ----------- Challenge sémák -----------
+# ----------- Challenge schemas -----------
 
 class ChallengeBase(BaseModel):
     name: str

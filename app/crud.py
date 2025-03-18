@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from . import models, schemas
 
-# ----------- CATEGORY MŰVELETEK -----------
+# ----------- CATEGORY METHODS -----------
 
 def create_category(db: Session, category: schemas.CategoryCreate):
     db_category = models.Category(name=category.name, description = category.description)
@@ -45,7 +45,7 @@ def delete_category(db: Session, category_id: int):
     db.commit()
     return {"message": "Category has been deleted."}
 
-# ----------- EXERCISE MŰVELETEK -----------
+# ----------- EXERCISE METHODS -----------
 
 def create_exercise(db: Session, exercise: schemas.ExerciseCreate):
     category = db.query(models.Category).filter(models.Category.id == exercise.category_id).first()
@@ -141,7 +141,7 @@ def delete_exercise(db: Session, exercise_id: int):
     db.commit()
     return {"message": "The exercise has been deleted."}
 
-# ----------- WORKOUT MŰVELETEK -----------
+# ----------- WORKOUT METHODS -----------
 
 def create_workout(db: Session, workout: schemas.WorkoutCreate):
     db_workout = models.Workout(name=workout.name)
@@ -251,7 +251,7 @@ def get_all_workouts(db: Session):
 def update_workout(db: Session, workout_id: int, workout_update: schemas.WorkoutCreate):
     db_workout = db.query(models.Workout).filter(models.Workout.id == workout_id).first()
     if not db_workout:
-        raise HTTPException(status_code=404, detail="A workout nem található.")
+        raise HTTPException(status_code=404, detail="Workout not found.")
 
     if workout_update.name:
         db_workout.name = workout_update.name
@@ -263,7 +263,7 @@ def update_workout(db: Session, workout_id: int, workout_update: schemas.Workout
             exercise = db.query(models.Exercise).filter(models.Exercise.id == we.exercise_id).first()
             if not exercise:
                 db.rollback()
-                raise HTTPException(status_code=400, detail=f"Gyakorlat ID {we.exercise_id} nem létezik.")
+                raise HTTPException(status_code=400, detail=f"Exercise ID {we.exercise_id} does not exist.")
             workout_exercise = models.WorkoutExercise(
                 workout_id=workout_id,
                 exercise_id=we.exercise_id,
@@ -282,7 +282,6 @@ def update_workout(db: Session, workout_id: int, workout_update: schemas.Workout
         db.rollback()
         raise HTTPException(status_code=400, detail="Error during workout update.")
 
-    # Frissítjük a választ, hogy biztosan tartalmazza a megfelelő mezőket
     return schemas.Workout(
         id=db_workout.id,
         name=db_workout.name,
@@ -316,12 +315,12 @@ def delete_workout(db: Session, workout_id: int):
     return {"message": "Workout has been deleted."}
 
 
-# ----------- CHALLENGE MŰVELETEK -----------
+# ----------- CHALLENGE METHODS -----------
 
 def create_challenge(db: Session, challenge: schemas.ChallengeCreate):
     exercise = db.query(models.Exercise).filter(models.Exercise.id == challenge.exercise_id).first()
     if not exercise:
-        raise HTTPException(status_code=400, detail="A megadott gyakorlat nem létezik.")
+        raise HTTPException(status_code=400, detail="Exercise does not exist.")
 
     db_challenge = models.Challenge(
         name=challenge.name,
@@ -338,12 +337,12 @@ def create_challenge(db: Session, challenge: schemas.ChallengeCreate):
         return db_challenge
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=400, detail="A kihívás neve már létezik.")
+        raise HTTPException(status_code=400, detail="Name of the challenge is already used.")
     
 def get_challenge_by_id(db: Session, challenge_id: int):
     challenge = db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
     if not challenge:
-        raise HTTPException(status_code=404, detail="A kihívás nem található.")
+        raise HTTPException(status_code=404, detail="Challenge not found.")
     return challenge
 
 def get_all_challenges(db: Session):
@@ -352,10 +351,10 @@ def get_all_challenges(db: Session):
 def update_challenge(db: Session, challenge_id: int, challenge_update: schemas.ChallengeBase):
     db_challenge = db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
     if not db_challenge:
-        raise HTTPException(status_code=404, detail="A kihívás nem található.")
+        raise HTTPException(status_code=404, detail="Challenge not found.")
 
     db_challenge.name = challenge_update.name
-    db_challenge.description = challenge_update.description  # New field
+    db_challenge.description = challenge_update.description
     db_challenge.count_reps = challenge_update.count_reps
     db_challenge.duration = challenge_update.duration
     db_challenge.measurement_method = challenge_update.measurement_method
@@ -366,8 +365,8 @@ def update_challenge(db: Session, challenge_id: int, challenge_update: schemas.C
 def delete_challenge(db: Session, challenge_id: int):
     db_challenge = db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
     if not db_challenge:
-        raise HTTPException(status_code=404, detail="A kihívás nem található.")
+        raise HTTPException(status_code=404, detail="Challenge not found.")
 
     db.delete(db_challenge)
     db.commit()
-    return {"message": "A kihívás törölve lett."}
+    return {"message": "Challenge has been successfully deleted."}

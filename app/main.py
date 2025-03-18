@@ -5,7 +5,6 @@ from .database import engine
 from . import models
 from fastapi.middleware.cors import CORSMiddleware
 
-# Adatbázis táblák létrehozása
 models.Base.metadata.create_all(bind=engine)
 
 
@@ -24,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Routerek regisztrálása
 app.include_router(categories.categories_router, dependencies=[Depends(get_api_key)])
 app.include_router(exercises.exercises_router, dependencies=[Depends(get_api_key)])
 app.include_router(workouts.workouts_router, dependencies=[Depends(get_api_key)])
@@ -32,4 +30,4 @@ app.include_router(challenges.challenges_router, dependencies=[Depends(get_api_k
 
 @app.get("/", dependencies=[Depends(get_api_key)])
 def root():
-    return {"message": "Üdvözöl a Workout API!"}
+    return {"message": "Welcome to the Workout API!"}
