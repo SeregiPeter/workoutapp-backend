@@ -32,6 +32,14 @@ class ExerciseBase(BaseModel):
     image_url: Optional[str] = Field(None, max_length=300)
     duration_based: Optional[bool] = Field(False)
 
+class ExerciseUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    description: Optional[str] = Field(None, max_length=500)
+    video_url: Optional[str] = Field(None, max_length=300)
+    image_url: Optional[str] = Field(None, max_length=300)
+    duration_based: Optional[bool] = None
+    category_id: Optional[int] = Field(None, gt=0)
+
 class ExerciseCreate(ExerciseBase):
     category_id: int = Field(..., gt=0)
 

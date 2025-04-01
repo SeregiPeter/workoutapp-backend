@@ -82,3 +82,4 @@ if __name__ == "__main__":
         seed_data(db)
     finally:
         db.close()
+

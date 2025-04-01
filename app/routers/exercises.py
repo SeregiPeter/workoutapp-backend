@@ -17,7 +17,7 @@ def create_exercise(exercise: schemas.ExerciseCreate, db: Session = Depends(data
     return crud.create_exercise(db, exercise)
 
 @exercises_router.put("/{exercise_id}", response_model=schemas.Exercise)
-def update_exercise(exercise_id: int, exercise: schemas.ExerciseBase, db: Session = Depends(database.get_db)):
+def update_exercise(exercise_id: int, exercise: schemas.ExerciseUpdate, db: Session = Depends(database.get_db)):
     return crud.update_exercise(db, exercise_id, exercise)
 
 @exercises_router.delete("/{exercise_id}")

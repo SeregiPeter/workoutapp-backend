@@ -23,3 +23,5 @@ def update_challenge(challenge_id: int, challenge: schemas.ChallengeBase, db: Se
 @challenges_router.delete("/{challenge_id}")
 def delete_challenge(challenge_id: int, db: Session = Depends(database.get_db)):
     return crud.delete_challenge(db=db, challenge_id=challenge_id)
+
+

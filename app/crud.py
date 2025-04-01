@@ -118,16 +118,24 @@ def get_all_exercises(db: Session):
         for exercise in exercises
     ]
 
-def update_exercise(db: Session, exercise_id: int, exercise_update: schemas.ExerciseBase):
+def update_exercise(db: Session, exercise_id: int, exercise_update: schemas.ExerciseUpdate):
     db_exercise = db.query(models.Exercise).filter(models.Exercise.id == exercise_id).first()
     if not db_exercise:
         raise HTTPException(status_code=404, detail="Workout not found.")
 
-    db_exercise.name = exercise_update.name
-    db_exercise.description = exercise_update.description
-    db_exercise.video_url = exercise_update.video_url
-    db_exercise.image_url = exercise_update.image_url
-    db_exercise.duration_based = exercise_update.duration_based
+    if exercise_update.name is not None:
+        db_exercise.name = exercise_update.name
+    if exercise_update.description is not None:
+        db_exercise.description = exercise_update.description
+    if exercise_update.video_url is not None:
+        db_exercise.video_url = exercise_update.video_url
+    if exercise_update.image_url is not None:
+        db_exercise.image_url = exercise_update.image_url
+    if exercise_update.duration_based is not None:
+        db_exercise.duration_based = exercise_update.duration_based
+    if exercise_update.category_id is not None:
+        db_exercise.category_id = exercise_update.category_id
+    
     db.commit()
     db.refresh(db_exercise)
     return db_exercise

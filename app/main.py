@@ -4,6 +4,7 @@ from .routers import categories, exercises, workouts, challenges
 from .database import engine
 from . import models
 from fastapi.middleware.cors import CORSMiddleware
+from .middlewares.auth_middleware import api_key_middleware
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -23,10 +24,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(categories.categories_router, dependencies=[Depends(get_api_key)])
-app.include_router(exercises.exercises_router, dependencies=[Depends(get_api_key)])
-app.include_router(workouts.workouts_router, dependencies=[Depends(get_api_key)])
-app.include_router(challenges.challenges_router, dependencies=[Depends(get_api_key)])
+app.middleware("http")(api_key_middleware)
+
+app.include_router(categories.categories_router)
+app.include_router(exercises.exercises_router)
+app.include_router(workouts.workouts_router)
+app.include_router(challenges.challenges_router)
 
 @app.get("/", dependencies=[Depends(get_api_key)])
 def root():
