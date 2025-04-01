@@ -31,6 +31,6 @@ app.include_router(exercises.exercises_router)
 app.include_router(workouts.workouts_router)
 app.include_router(challenges.challenges_router)
 
-@app.get("/", dependencies=[Depends(get_api_key)])
+@app.get("/")
 def root():
     return {"message": "Welcome to the Workout API!"}
