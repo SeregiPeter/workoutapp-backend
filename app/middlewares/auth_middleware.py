@@ -17,25 +17,22 @@ async def api_key_middleware(request: Request, call_next):
         return await call_next(request)
 
     api_key = request.headers.get("api_key")
-    print("API KEY:", api_key)
+    print("Received API KEY:", api_key)  # Logolás
+
     if not api_key:
         response = JSONResponse(
             status_code=401,
             content={"detail": "Missing API key. Please provide an 'api_key' header!"},
         )
     elif request.method == "GET" and api_key in [READONLY_API_KEY, FULL_ACCESS_API_KEY]:
-        return await call_next(request)
-    elif request.method in ["POST", "PUT", "DELETE"] and api_key != FULL_ACCESS_API_KEY:
-        response = JSONResponse(
-            status_code=403,
-            content={"detail": "Insufficient permissions. This API key only allows read access!"},
-        )
+        return await call_next(request)  # 🔹 Itt volt a hiba: ha érvényes a kulcs, engedjük tovább!
+    elif request.method in ["POST", "PUT", "DELETE"] and api_key == FULL_ACCESS_API_KEY:
+        return await call_next(request)  # 🔹 Itt is engedjük tovább, ha a megfelelő kulcsot használják!
     else:
         response = JSONResponse(
             status_code=403,
-            content={"detail": "Invalid API key. Check your key or request access!"},
+            content={"detail": "Invalid API key or insufficient permissions!"},
         )
 
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = "*"  # CORS beállítás
     return response
-
