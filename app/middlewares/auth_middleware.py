@@ -1,4 +1,4 @@
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException, Response
 from fastapi.responses import JSONResponse
 import os
 from dotenv import load_dotenv
@@ -9,6 +9,9 @@ READONLY_API_KEY = os.getenv("API_KEY_READONLY")
 FULL_ACCESS_API_KEY = os.getenv("API_KEY_FULL_ACCESS")
 
 async def api_key_middleware(request: Request, call_next):
+    if request.method == "OPTIONS":
+            return Response(status_code=200)
+
     open_paths = ["/docs", "/redoc", "/openapi.json"]
 
     # Allow access to docs and API schema
