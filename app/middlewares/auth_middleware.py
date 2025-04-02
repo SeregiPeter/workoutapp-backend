@@ -17,6 +17,7 @@ async def api_key_middleware(request: Request, call_next):
         return await call_next(request)
 
     api_key = request.headers.get("api_key")
+    print("API KEY:", api_key)
     if not api_key:
         response = JSONResponse(
             status_code=401,
