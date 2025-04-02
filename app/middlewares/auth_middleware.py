@@ -16,18 +16,9 @@ async def api_key_middleware(request: Request, call_next):
     if request.url.path in open_paths:
         return await call_next(request)
 
-    api_key = request.headers.get("api_key").strip()
-
-    print("Ellenőrzés karakterenként:")
-    for i, (c1, c2) in enumerate(zip(api_key, FULL_ACCESS_API_KEY)):
-        if c1 != c2:
-            print(f"Eltérés a(z) {i}. helyen: {repr(c1)} != {repr(c2)}")
-
-    print("FULL ACCESS API KEY: ", FULL_ACCESS_API_KEY)
-    print("READONLY API KEY:", READONLY_API_KEY)
-    print("API KEY RECEIVED:", api_key)
-    print("REQUEST METHOD:", request.method)
-    print("API KEY == FULL ACCESS API KEY:", api_key == FULL_ACCESS_API_KEY)
+    api_key = request.headers.get("api_key")
+    if api_key != None:
+        api_key = api_key.strip()
 
     if not api_key:
         response = JSONResponse(
