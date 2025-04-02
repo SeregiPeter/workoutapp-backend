@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-READONLY_API_KEY = os.getenv("API_KEY_READONLY")
-FULL_ACCESS_API_KEY = os.getenv("API_KEY_FULL_ACCESS")
+READONLY_API_KEY = os.getenv("API_KEY_READONLY").strip()
+FULL_ACCESS_API_KEY = os.getenv("API_KEY_FULL_ACCESS").strip()
 
 async def api_key_middleware(request: Request, call_next):
     if request.method == "OPTIONS":
@@ -16,7 +16,7 @@ async def api_key_middleware(request: Request, call_next):
     if request.url.path in open_paths:
         return await call_next(request)
 
-    api_key = request.headers.get("api_key")
+    api_key = request.headers.get("api_key").strip()
 
     print("Ellenőrzés karakterenként:")
     for i, (c1, c2) in enumerate(zip(api_key, FULL_ACCESS_API_KEY)):
