@@ -17,7 +17,10 @@ async def api_key_middleware(request: Request, call_next):
         return await call_next(request)
 
     api_key = request.headers.get("api_key")
-    print("Received API KEY:", api_key)  # Logolás
+    
+    print("FULL ACCESS API KEY: ", FULL_ACCESS_API_KEY)
+    print("READONLY API KEY:", READONLY_API_KEY)
+    print("API KEY RECEIVED:", api_key)
 
     if not api_key:
         response = JSONResponse(
