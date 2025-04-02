@@ -10,7 +10,7 @@ FULL_ACCESS_API_KEY = os.getenv("API_KEY_FULL_ACCESS")
 
 async def api_key_middleware(request: Request, call_next):
     if request.method == "OPTIONS":
-            return Response(status_code=200)
+            return await call_next(request)
 
     open_paths = ["/docs", "/redoc", "/openapi.json"]
 
