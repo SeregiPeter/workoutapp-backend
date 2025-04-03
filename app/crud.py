@@ -98,6 +98,7 @@ def get_all_exercises(db: Session):
     exercises = (
         db.query(models.Exercise)
         .join(models.Category, models.Exercise.category_id == models.Category.id)
+        .order_by(models.Exercise.id)
         .all()
     )
 

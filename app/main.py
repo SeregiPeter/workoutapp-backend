@@ -5,7 +5,6 @@ from .database import engine
 from . import models
 from fastapi.middleware.cors import CORSMiddleware
 from .middlewares.auth_middleware import api_key_middleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -25,7 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(HTTPSRedirectMiddleware)
 
 app.middleware("http")(api_key_middleware)
 

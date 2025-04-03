@@ -979,7 +979,7 @@ def test_write_access_with_readonly_api_key():
         headers={"api_key": READONLY_API_KEY},
     )
     assert response.status_code == 403
-    assert response.json() == {"detail": "Insufficient permissions. This API key only allows read access!"}
+    assert response.json() == {"detail": "Invalid API key or insufficient permissions!"}
 
 def test_write_access_with_full_access_api_key():
     response = client.post(
@@ -992,4 +992,4 @@ def test_write_access_with_full_access_api_key():
 def test_invalid_api_key():
     response = client.get("/categories/", headers={"api_key": "invalid-key"})
     assert response.status_code == 403
-    assert response.json() == {"detail": "Invalid API key. Check your key or request access!"}
+    assert response.json() == {"detail": "Invalid API key or insufficient permissions!"}
