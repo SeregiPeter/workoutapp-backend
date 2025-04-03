@@ -139,6 +139,11 @@ class Challenge(ChallengeBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+    @model_validator(mode="after")
+    def check_count_reps_and_duration(cls, values):
+        if values.count_reps and values.duration is None:
+            raise ValueError("If 'count_reps' is True, 'duration' must be set.")
+        return values
 
 
 
