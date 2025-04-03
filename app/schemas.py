@@ -87,6 +87,12 @@ class WorkoutExerciseSchema(BaseModel):
 class WorkoutCreate(WorkoutBase):
     exercises: List[WorkoutExerciseSchema] = Field(default=[])
 
+    @model_validator(mode="after")
+    def check_exercises_not_empty(cls, values):
+        if not values.exercises:
+            raise ValueError("Workout must contain at least one exercise.")
+        return values
+
 class WorkoutShort(BaseModel):
     id: int
     name: str
