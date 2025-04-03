@@ -1,5 +1,5 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, root_validator
 from typing import List, Optional
 from pydantic.config import ConfigDict
 
@@ -77,6 +77,13 @@ class WorkoutExerciseSchema(BaseModel):
     duration: Optional[int] = Field(None, ge=1)
     rest_time_between: int = Field(0, ge=0)
     rest_time_after: int = Field(0, ge=0)
+
+    @root_validator
+    def check_reps_or_duration(cls, values):
+        reps, duration = values.get("reps"), values.get("duration")
+        if (reps is None and duration is None) or (reps is not None and duration is not None):
+            raise ValueError("Either reps or duration must be set, but not both.")
+        return values
 
 class WorkoutCreate(WorkoutBase):
     exercises: List[WorkoutExerciseSchema] = Field(default=[])
