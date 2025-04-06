@@ -471,21 +471,46 @@ def test_create_exercise_without_category():
 
 # Workout tests
 
-def test_create_workout():
+def test_create_workout_without_exercises():
     workout_name = f"Workout-{uuid.uuid4()}"
     response = client.post(
         "/workouts/",
         json={"name": workout_name, "exercises": []},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
-    assert response.status_code == 200
-    assert response.json()["name"] == workout_name
+    assert response.status_code == 422
 
 def test_get_workout_by_id():
+    category_response = client.post(
+        "/categories/",
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        headers={"api_key": FULL_ACCESS_API_KEY}
+    )
+    assert category_response.status_code == 200
+    category_id = category_response.json()["id"]
+    
+    exercise1_response = client.post(
+        "/exercises/",
+        json={
+            "name": f"Exercise-{uuid.uuid4()}",
+            "description": "First test exercise",
+            "category_id": category_id
+        },
+        headers={"api_key": FULL_ACCESS_API_KEY}
+    )
+
+    exercise1_id = exercise1_response.json()["id"]
+
+
     workout_name = f"Workout-{uuid.uuid4()}"
     create_response = client.post(
         "/workouts/",
-        json={"name": workout_name, "exercises": []},
+        json={
+            "name": workout_name,
+            "exercises": [
+                {"exercise_id": exercise1_id, "sets": 3, "reps": 10, "rest_time_between": 30}
+            ]
+        },
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert create_response.status_code == 200
@@ -498,10 +523,36 @@ def test_get_workout_by_id():
 
 
 def test_update_workout():
+    category_response = client.post(
+        "/categories/",
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        headers={"api_key": FULL_ACCESS_API_KEY}
+    )
+    assert category_response.status_code == 200
+    category_id = category_response.json()["id"]
+    
+    exercise1_response = client.post(
+        "/exercises/",
+        json={
+            "name": f"Exercise-{uuid.uuid4()}",
+            "description": "First test exercise",
+            "category_id": category_id
+        },
+        headers={"api_key": FULL_ACCESS_API_KEY}
+    )
+
+    exercise1_id = exercise1_response.json()["id"]
+
+
     workout_name = f"Workout-{uuid.uuid4()}"
     create_response = client.post(
         "/workouts/",
-        json={"name": workout_name, "exercises": []},
+        json={
+            "name": workout_name,
+            "exercises": [
+                {"exercise_id": exercise1_id, "sets": 3, "reps": 10, "rest_time_between": 30}
+            ]
+        },
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert create_response.status_code == 200
@@ -510,7 +561,9 @@ def test_update_workout():
     updated_name = f"Updated-{uuid.uuid4()}"
     update_response = client.put(
         f"/workouts/{workout_id}",
-        json={"name": updated_name, "exercises": []},
+        json={"name": updated_name, "exercises": [
+                {"exercise_id": exercise1_id, "sets": 3, "reps": 10, "rest_time_between": 30}
+            ]},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert update_response.status_code == 200
@@ -519,10 +572,36 @@ def test_update_workout():
 
 
 def test_delete_workout():
+    category_response = client.post(
+        "/categories/",
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        headers={"api_key": FULL_ACCESS_API_KEY}
+    )
+    assert category_response.status_code == 200
+    category_id = category_response.json()["id"]
+    
+    exercise1_response = client.post(
+        "/exercises/",
+        json={
+            "name": f"Exercise-{uuid.uuid4()}",
+            "description": "First test exercise",
+            "category_id": category_id
+        },
+        headers={"api_key": FULL_ACCESS_API_KEY}
+    )
+
+    exercise1_id = exercise1_response.json()["id"]
+
+
     workout_name = f"Workout-{uuid.uuid4()}"
     create_response = client.post(
         "/workouts/",
-        json={"name": workout_name, "exercises": []},
+        json={
+            "name": workout_name,
+            "exercises": [
+                {"exercise_id": exercise1_id, "sets": 3, "reps": 10, "rest_time_between": 30}
+            ]
+        },
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert create_response.status_code == 200
@@ -798,7 +877,6 @@ def test_update_challenge():
             "name": "Updated Challenge",
             "description": "Updated description",
             "count_reps": False,
-            "duration": 90,
             "measurement_method": "manual"
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -808,7 +886,7 @@ def test_update_challenge():
     assert updated_challenge["name"] == "Updated Challenge"
     assert updated_challenge["description"] == "Updated description"
     assert updated_challenge["count_reps"] is False
-    assert updated_challenge["duration"] == 90
+    assert updated_challenge["duration"] is None
     assert updated_challenge["measurement_method"] == "manual"
 
 

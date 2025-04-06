@@ -1,6 +1,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from .database import Base
+from sqlalchemy import Enum as SQLAlchemyEnum
+from enum import Enum as PyEnum
+from .schemas import MeasurementMethodEnum
 
 
 class Category(Base):
@@ -64,7 +67,10 @@ class Challenge(Base):
     description = Column(String(500), nullable=True)
     count_reps = Column(Boolean, nullable=False)
     duration = Column(Integer, nullable=True)
-    measurement_method = Column(String(50), nullable=False)
+    measurement_method = Column(
+        SQLAlchemyEnum(MeasurementMethodEnum, values_callable=lambda x: [e.value for e in x]),
+        nullable=False
+    )
     exercise_id = Column(Integer, ForeignKey("exercises.id", ondelete="CASCADE"), nullable=False)
     
     exercise = relationship("Exercise", back_populates="challenges")

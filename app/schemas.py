@@ -1,7 +1,8 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, HttpUrl
 from typing import List, Optional
 from pydantic.config import ConfigDict
+from enum import Enum
 
 # ----------- Category schemas -----------
 class CategoryBase(BaseModel):
@@ -14,7 +15,7 @@ class CategoryCreate(CategoryBase):
 class CategoryShort(BaseModel):
     id: int
     name: str
-    description: str
+    description: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
 
 class Category(CategoryBase):
@@ -28,15 +29,15 @@ class Category(CategoryBase):
 class ExerciseBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     description: Optional[str] = Field(None, max_length=500)
-    video_url: Optional[str] = Field(None, max_length=300)
-    image_url: Optional[str] = Field(None, max_length=300)
-    duration_based: Optional[bool] = Field(False)
+    video_url: Optional[HttpUrl] = Field(None, max_length=300)
+    image_url: Optional[HttpUrl] = Field(None, max_length=300)
+    duration_based: bool = Field(False)
 
 class ExerciseUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=100)
     description: Optional[str] = Field(None, max_length=500)
-    video_url: Optional[str] = Field(None, max_length=300)
-    image_url: Optional[str] = Field(None, max_length=300)
+    video_url: Optional[HttpUrl] = Field(None, max_length=300)
+    image_url: Optional[HttpUrl] = Field(None, max_length=300)
     duration_based: Optional[bool] = None
     category_id: Optional[int] = Field(None, gt=0)
 
@@ -46,19 +47,14 @@ class ExerciseCreate(ExerciseBase):
 class ExerciseShort(BaseModel):
     id: int
     name: str
-    description: Optional[str]
-    video_url: Optional[str]
-    image_url: Optional[str]
-    duration_based: Optional[bool]
+    description: Optional[str] = None
+    video_url: Optional[HttpUrl] = None
+    image_url: Optional[HttpUrl] = None
+    duration_based: bool = False
     model_config = ConfigDict(from_attributes=True)
 
-class Exercise(BaseModel):
+class Exercise(ExerciseBase):
     id: int
-    name: str
-    description: Optional[str] = None
-    video_url: Optional[str] = None
-    image_url: Optional[str] = None
-    duration_based: Optional[bool]
     category: Optional[CategoryShort]
     workouts: List[WorkoutShort] = []
 
@@ -113,9 +109,8 @@ class WorkoutExerciseDetail(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-class Workout(BaseModel):
+class Workout(WorkoutBase):
     id: int
-    name: str
     exercises: List[WorkoutExerciseDetail] = []
 
     model_config = ConfigDict(from_attributes=True)
@@ -123,12 +118,17 @@ class Workout(BaseModel):
 
 # ----------- Challenge schemas -----------
 
+class MeasurementMethodEnum(str, Enum):
+    DOWN_UP = "downUpMovement"
+    PROXIMITY = "proximity"
+    STILLNESS = "stillness"
+
 class ChallengeBase(BaseModel):
-    name: str
-    description: Optional[str] = None
+    name: str = Field(..., min_length=1, max_length=100)
+    description: Optional[str] = Field(None, max_length=500)
     count_reps: bool
-    duration: Optional[int] = None
-    measurement_method: str
+    duration: Optional[int] = Field(None, ge=1)
+    measurement_method: MeasurementMethodEnum
 
 class ChallengeCreate(ChallengeBase):
     exercise_id: int
@@ -143,7 +143,10 @@ class Challenge(ChallengeBase):
     def check_count_reps_and_duration(cls, values):
         if values.count_reps and values.duration is None:
             raise ValueError("If 'count_reps' is True, 'duration' must be set.")
+        if not values.count_reps and values.duration is not None:
+            raise ValueError("If 'count_reps' is False, 'duration' must not be set.")
         return values
+    
 
 
 
