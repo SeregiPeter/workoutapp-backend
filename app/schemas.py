@@ -133,12 +133,6 @@ class ChallengeBase(BaseModel):
 class ChallengeCreate(ChallengeBase):
     exercise_id: int
 
-class Challenge(ChallengeBase):
-    id: int
-    exercise: ExerciseShort
-
-    model_config = ConfigDict(from_attributes=True)
-
     @model_validator(mode="after")
     def check_count_reps_and_duration(cls, values):
         if values.count_reps and values.duration is None:
@@ -146,6 +140,13 @@ class Challenge(ChallengeBase):
         if not values.count_reps and values.duration is not None:
             raise ValueError("If 'count_reps' is False, 'duration' must not be set.")
         return values
+
+class Challenge(ChallengeBase):
+    id: int
+    exercise: ExerciseShort
+
+    model_config = ConfigDict(from_attributes=True)
+
     
 
 
