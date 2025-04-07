@@ -231,7 +231,7 @@ def get_workout_by_id(db: Session, workout_id: int):
     )
 
 def get_all_workouts(db: Session):
-    workouts = db.query(models.Workout).all()
+    workouts = db.query(models.Workout).order_by(models.Workout.id).all()
     
     return [
         schemas.Workout(

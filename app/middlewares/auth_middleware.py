@@ -26,10 +26,9 @@ async def api_key_middleware(request: Request, call_next):
             content={"detail": "Missing API key. Please provide an 'api_key' header!"},
         )
     elif request.method == "GET" and api_key in [READONLY_API_KEY, FULL_ACCESS_API_KEY]:
-        return await call_next(request)  # 🔹 Itt volt a hiba: ha érvényes a kulcs, engedjük tovább!
+        return await call_next(request)
     elif request.method in ["POST", "PUT", "DELETE"] and api_key == FULL_ACCESS_API_KEY:
-        print("THIS SHOULD BE REACHED")
-        return await call_next(request)  # 🔹 Itt is engedjük tovább, ha a megfelelő kulcsot használják!
+        return await call_next(request)
     else:
         response = JSONResponse(
             status_code=403,
