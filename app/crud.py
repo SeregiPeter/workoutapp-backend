@@ -355,7 +355,7 @@ def get_challenge_by_id(db: Session, challenge_id: int):
     return challenge
 
 def get_all_challenges(db: Session):
-    return db.query(models.Challenge).all()
+    return db.query(models.Challenge).order_by(models.Challenge.id).all()
 
 def update_challenge(db: Session, challenge_id: int, challenge_update: schemas.ChallengeBase):
     db_challenge = db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
