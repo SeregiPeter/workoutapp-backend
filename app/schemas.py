@@ -28,10 +28,13 @@ class Category(CategoryBase):
 
 class ExerciseBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    description: Optional[str] = Field(None, max_length=500)
-    video_url: Optional[HttpUrl] = Field(None, max_length=300)
-    image_url: Optional[HttpUrl] = Field(None, max_length=300)
+    description: str = Field(..., min_length=1, max_length=500)  # Kötelező
+    video_url: HttpUrl = Field(..., max_length=300)              # Kötelező
+    image_url: HttpUrl = Field(..., max_length=300)              # Kötelező
     duration_based: bool = Field(False)
+
+class ExerciseCreate(ExerciseBase):
+    category_id: int = Field(..., gt=0)  # Kötelező kategória
 
 class ExerciseUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=100)
@@ -41,24 +44,21 @@ class ExerciseUpdate(BaseModel):
     duration_based: Optional[bool] = None
     category_id: Optional[int] = Field(None, gt=0)
 
-class ExerciseCreate(ExerciseBase):
-    category_id: int = Field(..., gt=0)
-
 class ExerciseShort(BaseModel):
     id: int
     name: str
-    description: Optional[str] = None
-    video_url: Optional[HttpUrl] = None
-    image_url: Optional[HttpUrl] = None
-    duration_based: bool = False
+    description: str
+    video_url: HttpUrl
+    image_url: HttpUrl
+    duration_based: bool
     model_config = ConfigDict(from_attributes=True)
 
 class Exercise(ExerciseBase):
     id: int
-    category: Optional[CategoryShort]
+    category: CategoryShort  # Nem Optional
     workouts: List[WorkoutShort] = []
-
     model_config = ConfigDict(from_attributes=True)
+
 
 
 # ----------- Workout schemas -----------
@@ -97,10 +97,10 @@ class WorkoutShort(BaseModel):
 class WorkoutExerciseDetail(BaseModel):
     id: int
     name: str
-    description: Optional[str] = None
-    video_url: Optional[str] = None
-    image_url: Optional[str] = None
-    duration_based: Optional[bool] = None
+    description: str  # Nem Optional
+    video_url: HttpUrl
+    image_url: HttpUrl
+    duration_based: bool
     sets: int
     reps: Optional[int] = None
     duration: Optional[int] = None
@@ -108,6 +108,7 @@ class WorkoutExerciseDetail(BaseModel):
     rest_time_after: int
 
     model_config = ConfigDict(from_attributes=True)
+
 
 class Workout(WorkoutBase):
     id: int
@@ -125,10 +126,11 @@ class MeasurementMethodEnum(str, Enum):
 
 class ChallengeBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    description: Optional[str] = Field(None, max_length=500)
+    description: str = Field(..., max_length=500)  # ❗ Már nem Optional
     count_reps: bool
     duration: Optional[int] = Field(None, ge=1)
     measurement_method: MeasurementMethodEnum
+
 
 class ChallengeCreate(ChallengeBase):
     exercise_id: int

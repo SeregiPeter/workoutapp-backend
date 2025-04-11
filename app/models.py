@@ -11,7 +11,7 @@ class Category(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, index=True, nullable=False)
-    description = Column(String(500), nullable=True)
+    description = Column(String(500), nullable=False)
     
     exercises = relationship("Exercise", back_populates="category", cascade="all, delete")
 
@@ -21,16 +21,17 @@ class Exercise(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), index=True, nullable=False)
-    description = Column(String(500), nullable=True)
-    video_url = Column(String(300), nullable=True)
-    image_url = Column(String(300), nullable=True)
+    description = Column(String(500), nullable=False)  # Nem nullable
+    video_url = Column(String(300), nullable=False)    # Nem nullable
+    image_url = Column(String(300), nullable=False)    # Nem nullable
     
-    category_id = Column(Integer, ForeignKey("categories.id", ondelete="SET NULL"), nullable=True)
-    duration_based = Column(Boolean, default=False)
+    category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=False)  # Kötelező kategória
+    duration_based = Column(Boolean, default=False, nullable=False)
 
     category = relationship("Category", back_populates="exercises")
     workouts = relationship("WorkoutExercise", back_populates="exercise", cascade="all, delete")
     challenges = relationship("Challenge", back_populates="exercise", cascade="all, delete")
+
 
 
 class Workout(Base):
@@ -50,8 +51,8 @@ class WorkoutExercise(Base):
     exercise_id = Column(Integer, ForeignKey("exercises.id", ondelete="CASCADE"), nullable=False)
     
     sets = Column(Integer, nullable=False, default=1)
-    reps = Column(Integer, nullable=True)
-    duration = Column(Integer, nullable=True)
+    reps = Column(Integer, nullable=True)      # Marad nullable, validátor kezeli
+    duration = Column(Integer, nullable=True)  # Marad nullable, validátor kezeli
     
     rest_time_between = Column(Integer, nullable=False, default=0)
     rest_time_after = Column(Integer, nullable=False, default=0)
@@ -59,12 +60,13 @@ class WorkoutExercise(Base):
     workout = relationship("Workout", back_populates="exercises")
     exercise = relationship("Exercise", back_populates="workouts")
 
+
 class Challenge(Base):
     __tablename__ = "challenges"
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), index=True, nullable=False)
-    description = Column(String(500), nullable=True)
+    description = Column(String(500), nullable=False)
     count_reps = Column(Boolean, nullable=False)
     duration = Column(Integer, nullable=True)
     measurement_method = Column(
@@ -74,5 +76,6 @@ class Challenge(Base):
     exercise_id = Column(Integer, ForeignKey("exercises.id", ondelete="CASCADE"), nullable=False)
     
     exercise = relationship("Exercise", back_populates="challenges")
+
 
 

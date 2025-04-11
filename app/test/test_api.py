@@ -785,7 +785,7 @@ def test_create_challenge():
             "description": "Test challenge",
             "count_reps": True,
             "duration": 60,
-            "measurement_method": "sensor",
+            "measurement_method": "downUpMovement",
             "exercise_id": exercise_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -795,7 +795,7 @@ def test_create_challenge():
     assert challenge_data["name"].startswith("Challenge-")
     assert challenge_data["count_reps"] is True
     assert challenge_data["duration"] == 60
-    assert challenge_data["measurement_method"] == "sensor"
+    assert challenge_data["measurement_method"] == "downUpMovement"
     assert challenge_data["exercise"]["id"] == exercise_id
 
 
@@ -825,7 +825,7 @@ def test_get_challenge():
             "description": "Test challenge",
             "count_reps": True,
             "duration": 60,
-            "measurement_method": "sensor",
+            "measurement_method": "downUpMovement",
             "exercise_id": exercise_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -864,7 +864,7 @@ def test_update_challenge():
             "description": "Test challenge",
             "count_reps": True,
             "duration": 60,
-            "measurement_method": "sensor",
+            "measurement_method": "downUpMovement",
             "exercise_id": exercise_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -877,7 +877,7 @@ def test_update_challenge():
             "name": "Updated Challenge",
             "description": "Updated description",
             "count_reps": False,
-            "measurement_method": "manual"
+            "measurement_method": "proximity"
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
@@ -887,7 +887,7 @@ def test_update_challenge():
     assert updated_challenge["description"] == "Updated description"
     assert updated_challenge["count_reps"] is False
     assert updated_challenge["duration"] is None
-    assert updated_challenge["measurement_method"] == "manual"
+    assert updated_challenge["measurement_method"] == "proximity"
 
 
 def test_delete_challenge():
@@ -916,7 +916,7 @@ def test_delete_challenge():
             "description": "Test challenge",
             "count_reps": True,
             "duration": 60,
-            "measurement_method": "sensor",
+            "measurement_method": "proximity",
             "exercise_id": exercise_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -940,7 +940,7 @@ def test_create_challenge_with_invalid_exercise():
             "description": "Test challenge",
             "count_reps": True,
             "duration": 60,
-            "measurement_method": "sensor",
+            "measurement_method": "proximity",
             "exercise_id": 999999
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -976,7 +976,7 @@ def test_get_challenges_by_exercise():
                 "description": "Test challenge",
                 "count_reps": True,
                 "duration": 60,
-                "measurement_method": "sensor",
+                "measurement_method": "proximity",
                 "exercise_id": exercise_id
             },
             headers={"api_key": FULL_ACCESS_API_KEY}
@@ -1016,7 +1016,7 @@ def test_delete_exercise_deletes_challenges():
             "description": "Test challenge",
             "count_reps": True,
             "duration": 60,
-            "measurement_method": "sensor",
+            "measurement_method": "proximity",
             "exercise_id": exercise_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
