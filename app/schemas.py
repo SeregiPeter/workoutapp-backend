@@ -122,7 +122,6 @@ class Workout(WorkoutBase):
 class MeasurementMethodEnum(str, Enum):
     DOWN_UP = "downUpMovement"
     PROXIMITY = "proximity"
-    STILLNESS = "stillness"
 
 class ChallengeBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)

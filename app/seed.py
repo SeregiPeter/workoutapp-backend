@@ -68,8 +68,7 @@ def seed_data(db: Session):
 
     challenges = [
         models.Challenge(name="The Squat Challenge", description="Challenge yourself with squats.", count_reps=True, duration=60, measurement_method = "downUpMovement", exercise_id=exercises[9].id),
-        models.Challenge(name="The Push-up Challenge", description="Challenge yourself with push-ups.", count_reps=True, duration=60, measurement_method = "proximity", exercise_id=exercises[0].id),
-        models.Challenge(name="The Plank Challenge", description="Challenge yourself with planks.", count_reps=False, duration=None, measurement_method = "stillness", exercise_id=exercises[3].id),
+        models.Challenge(name="The Push-up Challenge", description="Challenge yourself with push-ups.", count_reps=True, duration=60, measurement_method = "proximity", exercise_id=exercises[0].id)
     ]
     db.add_all(challenges)
     db.commit()
