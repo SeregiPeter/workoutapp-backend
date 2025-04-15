@@ -68,11 +68,11 @@ class WorkoutBase(BaseModel):
 
 class WorkoutExerciseSchema(BaseModel):
     exercise_id: int = Field(..., gt=0)
-    sets: int = Field(1, ge=1)
-    reps: Optional[int] = Field(None, ge=1)
-    duration: Optional[int] = Field(None, ge=1)
-    rest_time_between: int = Field(0, ge=0)
-    rest_time_after: int = Field(0, ge=0)
+    sets: int = Field(1, ge=1, le=100)
+    reps: Optional[int] = Field(None, ge=1, le=300)
+    duration: Optional[int] = Field(None, ge=1, le=300)
+    rest_time_between: int = Field(0, ge=0, le=300)
+    rest_time_after: int = Field(0, ge=0, le=300)
 
     @model_validator(mode="after")
     def check_reps_or_duration(cls, values):
@@ -127,7 +127,7 @@ class ChallengeBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     description: str = Field(..., max_length=500)  # ❗ Már nem Optional
     count_reps: bool
-    duration: Optional[int] = Field(None, ge=1)
+    duration: Optional[int] = Field(None, ge=1, le=500)
     measurement_method: MeasurementMethodEnum
 
 
