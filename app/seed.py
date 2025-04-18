@@ -78,9 +78,9 @@ def seed_data(db: Session):
     db.commit()
 
     challenges = [
-        models.Challenge(name="The Squat Challenge", description="Hold your phone vertically in front of you and perform slow, controlled squats. The accelerometer detects motion and counts reps. Stay balanced and maintain good form. Try to perform as many squats as you can in 60 seconds. Note: Sensor accuracy may vary by device. Test before starting.", count_reps=True, duration=60, measurement_method = "downUpMovement", exercise_id=exercises[9].id),
+        models.Challenge(name="The Squat Challenge", description="Hold your phone vertically in front of you and perform slow, controlled squats. The accelerometer detects motion and counts reps. Stay balanced and maintain good form. Try to perform as many squats as you can in 60 seconds.", count_reps=True, duration=60, measurement_method = "downUpMovement", exercise_id=exercises[9].id),
 
-        models.Challenge(name="The Push-up Challenge", description="Place your phone flat on the floor under your head. Each time you lower yourself close to the screen, the proximity sensor detects and counts the rep. Perform as many push-ups as possible in 60 seconds. Note: Sensor response depends on your device. Test if it works beforehand.", count_reps=True, duration=60, measurement_method = "proximity", exercise_id=exercises[0].id)
+        models.Challenge(name="The Push-up Challenge", description="Place your phone flat on the floor under your head. Each time you lower yourself close to the screen, the proximity sensor detects and counts the rep. Perform as many push-ups as possible in 60 seconds.", count_reps=True, duration=60, measurement_method = "proximity", exercise_id=exercises[0].id)
     ]
     db.add_all(challenges)
     db.commit()
