@@ -7,7 +7,7 @@ from enum import Enum
 # ----------- Category schemas -----------
 class CategoryBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    description: Optional[str] = Field(None, max_length=500)
+    description: str = Field(..., max_length=500)
 
 class CategoryCreate(CategoryBase):
     pass
@@ -15,7 +15,7 @@ class CategoryCreate(CategoryBase):
 class CategoryShort(BaseModel):
     id: int
     name: str
-    description: Optional[str] = None
+    description: str
     model_config = ConfigDict(from_attributes=True)
 
 class Category(CategoryBase):
