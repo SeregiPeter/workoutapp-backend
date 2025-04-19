@@ -41,7 +41,7 @@ class ExerciseUpdate(BaseModel):
     description: Optional[str] = Field(None, max_length=500)
     video_url: Optional[HttpUrl] = Field(None, max_length=300)
     image_url: Optional[HttpUrl] = Field(None, max_length=300)
-    duration_based: Optional[bool] = None
+    #duration_based: Optional[bool] = None
     category_id: Optional[int] = Field(None, gt=0)
 
 class ExerciseShort(BaseModel):
