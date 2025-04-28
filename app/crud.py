@@ -133,8 +133,6 @@ def update_exercise(db: Session, exercise_id: int, exercise_update: schemas.Exer
         db_exercise.video_url = exercise_update.video_url
     if exercise_update.image_url is not None:
         db_exercise.image_url = exercise_update.image_url
-    if exercise_update.duration_based is not None:
-        db_exercise.duration_based = exercise_update.duration_based
     if exercise_update.category_id is not None:
         db_exercise.category_id = exercise_update.category_id
     

@@ -67,8 +67,8 @@ class Challenge(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), index=True, nullable=False)
     description = Column(String(500), nullable=False)
-    count_reps = Column(Boolean, nullable=False)
-    duration = Column(Integer, nullable=True)
+    #count_reps = Column(Boolean, nullable=False)
+    duration = Column(Integer, nullable=False)
     measurement_method = Column(
         SQLAlchemyEnum(MeasurementMethodEnum, values_callable=lambda x: [e.value for e in x]),
         nullable=False

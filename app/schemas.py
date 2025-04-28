@@ -127,20 +127,20 @@ class ChallengeBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     description: str = Field(..., min_length=20, max_length=500)  # ❗ Már nem Optional
     count_reps: bool
-    duration: Optional[int] = Field(None, ge=1, le=500)
+    duration: int = Field(..., ge=1, le=500)
     measurement_method: MeasurementMethodEnum
 
 
 class ChallengeCreate(ChallengeBase):
     exercise_id: int
 
-    @model_validator(mode="after")
+    '''@model_validator(mode="after")
     def check_count_reps_and_duration(cls, values):
         if values.count_reps and values.duration is None:
             raise ValueError("If 'count_reps' is True, 'duration' must be set.")
         if not values.count_reps and values.duration is not None:
             raise ValueError("If 'count_reps' is False, 'duration' must not be set.")
-        return values
+        return values'''
 
 class Challenge(ChallengeBase):
     id: int

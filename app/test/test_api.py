@@ -58,26 +58,26 @@ def clear_database():
 def test_create_category():
     response = client.post(
         "/categories/", 
-        json={"name": "Test Category", "description": "Test Description"}, 
+        json={"name": "Test Category", "description": "Test Description...."}, 
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert response.status_code == 200
     data = response.json()
     assert data.get("id") is not None
     assert data["name"] == "Test Category"
-    assert data["description"] == "Test Description"
+    assert data["description"] == "Test Description...."
 
 def test_create_category_without_api_key():
     response = client.post(
         "/categories/", 
-        json={"name": "No Key", "description": "Fails"}
+        json={"name": "No Key", "description": "Test Description...."}
     )
     assert response.status_code == 401
 
 def test_create_category_invalid_api_key():
     response = client.post(
         "/categories/", 
-        json={"name": "Wrong Key", "description": "Fails"}, 
+        json={"name": "Wrong Key", "description": "Test Description...."}, 
         headers={"api_key": "invalid_key"}
     )
     assert response.status_code == 403
@@ -85,7 +85,7 @@ def test_create_category_invalid_api_key():
 def test_create_category_empty_name():
     response = client.post(
         "/categories/",
-        json={"name": "", "description": "No name"},
+        json={"name": "", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert response.status_code == 422
@@ -94,7 +94,7 @@ def test_create_category_long_name():
     long_name = "A" * 101
     response = client.post(
         "/categories/",
-        json={"name": long_name, "description": "Too long name"},
+        json={"name": long_name, "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert response.status_code == 422
@@ -102,13 +102,13 @@ def test_create_category_long_name():
 def test_create_category_duplicate_name():
     client.post(
         "/categories/",
-        json={"name": "Unique Category", "description": "First entry"},
+        json={"name": "Unique Category", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
 
     response = client.post(
         "/categories/",
-        json={"name": "Unique Category", "description": "Duplicate entry"},
+        json={"name": "Unique Category", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert response.status_code == 400
@@ -126,7 +126,7 @@ def test_create_category_long_description():
 def test_get_categories():
     client.post(
         "/categories/", 
-        json={"name": "Another Category", "description": "Description"}, 
+        json={"name": "Another Category", "description": "Test Description...."}, 
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     response = client.get("/categories/", headers={"api_key": FULL_ACCESS_API_KEY})
@@ -137,7 +137,7 @@ def test_get_categories():
 def test_get_category_by_id():
     create_response = client.post(
         "/categories/", 
-        json={"name": "Test Category 5", "description": "For ID Test"}, 
+        json={"name": "Test Category 5", "description": "Test Description...."}, 
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert create_response.status_code == 200
@@ -155,7 +155,7 @@ def test_get_category_invalid_id():
 def test_update_category():
     create_response = client.post(
         "/categories/", 
-        json={"name": "Test Category 6", "description": "To be updated"}, 
+        json={"name": "Test Category 6", "description": "Test Description...."}, 
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert create_response.status_code == 200
@@ -163,7 +163,7 @@ def test_update_category():
 
     response = client.put(
         f"/categories/{category_id}", 
-        json={"name": "Updated Category 6", "description": "Updated Description"}, 
+        json={"name": "Updated Category 6", "description": "Test Description...."}, 
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert response.status_code == 200
@@ -172,7 +172,7 @@ def test_update_category():
 def test_update_category_invalid_id():
     response = client.put(
         "/categories/999999", 
-        json={"name": "Invalid Update", "description": "Does not exist"}, 
+        json={"name": "Invalid Update", "description": "Test Description...."}, 
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert response.status_code == 404
@@ -181,7 +181,7 @@ def test_update_category_invalid_id():
 def test_delete_category():
     create_response = client.post(
         "/categories/", 
-        json={"name": "Test Category 7", "description": "To be deleted"}, 
+        json={"name": "Test Category 7", "description": "Test Description...."}, 
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert create_response.status_code == 200
@@ -277,8 +277,7 @@ def test_update_exercise():
             "name": "Updated Exercise",
             "description": "Updated description",
             "video_url": "http://example.com/updated.mp4",
-            "image_url": "http://example.com/updated.jpg",
-            "duration_based": True
+            "image_url": "http://example.com/updated.jpg"
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
@@ -312,7 +311,7 @@ def test_create_category():
     category_name = f"Cardio-{uuid.uuid4()}"
     response = client.post(
         "/categories/",
-        json={"name": category_name, "description": "Cardio exercises"},
+        json={"name": category_name, "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert response.status_code == 200
@@ -323,7 +322,7 @@ def test_create_exercise_with_category():
     category_name = f"Category-{uuid.uuid4()}"
     category_response = client.post(
         "/categories/",
-        json={"name": category_name, "description": "Test category"},
+        json={"name": category_name, "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -334,7 +333,7 @@ def test_create_exercise_with_category():
         "/exercises/",
         json={
             "name": exercise_name,
-            "description": "Cardio exercise with a jump rope",
+            "description": "Test Description....",
             "video_url": "https://example.com/jumprope.mp4",
             "image_url": "https://example.com/jumprope.jpg",
             "duration_based": True,
@@ -350,7 +349,7 @@ def test_get_category_with_exercises():
     category_name = f"Category-{uuid.uuid4()}"
     category_response = client.post(
         "/categories/",
-        json={"name": category_name, "description": "Test category"},
+        json={"name": category_name, "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -361,11 +360,16 @@ def test_get_category_with_exercises():
         "/exercises/",
         json={
             "name": exercise_name,
-            "description": "Cardio exercise with a jump rope",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
+
+    
+
 
     response = client.get(f"/categories/{category_id}", headers={"api_key": FULL_ACCESS_API_KEY})
     assert response.status_code == 200
@@ -378,7 +382,9 @@ def test_create_exercise_invalid_category():
         "/exercises/",
         json={
             "name": "Invalid Exercise",
-            "description": "This should not be created",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": 999999
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -390,7 +396,7 @@ def test_create_exercise_invalid_category():
 def test_delete_category_and_check_exercise():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "To be deleted"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -400,7 +406,9 @@ def test_delete_category_and_check_exercise():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Exercise to be orphaned",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -418,7 +426,7 @@ def test_delete_category_and_check_exercise():
 def test_update_exercise_category():
     category1_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Old category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category1_response.status_code == 200
@@ -426,7 +434,7 @@ def test_update_exercise_category():
 
     category2_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "New category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category2_response.status_code == 200
@@ -436,7 +444,9 @@ def test_update_exercise_category():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category1_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -448,7 +458,9 @@ def test_update_exercise_category():
         f"/exercises/{exercise_id}",
         json={
             "name": "Updated Exercise",
-            "description": "Updated description",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category2_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -462,7 +474,9 @@ def test_create_exercise_without_category():
         "/exercises/",
         json={
             "name": "Plank",
-            "description": "Core strengthening exercise"
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg"
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
@@ -483,7 +497,7 @@ def test_create_workout_without_exercises():
 def test_get_workout_by_id():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -493,7 +507,9 @@ def test_get_workout_by_id():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "First test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -525,7 +541,7 @@ def test_get_workout_by_id():
 def test_update_workout():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -535,7 +551,9 @@ def test_update_workout():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "First test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -574,7 +592,7 @@ def test_update_workout():
 def test_delete_workout():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -584,7 +602,9 @@ def test_delete_workout():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "First test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -619,7 +639,7 @@ def test_delete_workout():
 def test_create_workout_with_exercises():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -629,7 +649,9 @@ def test_create_workout_with_exercises():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "First test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -641,7 +663,9 @@ def test_create_workout_with_exercises():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Second test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -674,7 +698,7 @@ def test_create_workout_with_exercises():
 def test_delete_exercise_and_check_workout():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -684,7 +708,9 @@ def test_delete_exercise_and_check_workout():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Exercise to be deleted",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -717,7 +743,7 @@ def test_delete_exercise_and_check_workout():
 def test_delete_workout_and_check_exercises():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -727,7 +753,9 @@ def test_delete_workout_and_check_exercises():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Exercise remains after workout deletion",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -760,7 +788,7 @@ def test_delete_workout_and_check_exercises():
 def test_create_challenge():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     assert category_response.status_code == 200
@@ -770,7 +798,9 @@ def test_create_challenge():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -782,7 +812,7 @@ def test_create_challenge():
         "/challenges/",
         json={
             "name": f"Challenge-{uuid.uuid4()}",
-            "description": "Test challenge",
+            "description": "Test Description....",
             "count_reps": True,
             "duration": 60,
             "measurement_method": "downUpMovement",
@@ -802,7 +832,7 @@ def test_create_challenge():
 def test_get_challenge():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     category_id = category_response.json()["id"]
@@ -811,7 +841,9 @@ def test_get_challenge():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -822,7 +854,7 @@ def test_get_challenge():
         "/challenges/",
         json={
             "name": f"Challenge-{uuid.uuid4()}",
-            "description": "Test challenge",
+            "description": "Test Description....",
             "count_reps": True,
             "duration": 60,
             "measurement_method": "downUpMovement",
@@ -841,7 +873,7 @@ def test_get_challenge():
 def test_update_challenge():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     category_id = category_response.json()["id"]
@@ -850,7 +882,9 @@ def test_update_challenge():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -861,7 +895,7 @@ def test_update_challenge():
         "/challenges/",
         json={
             "name": f"Challenge-{uuid.uuid4()}",
-            "description": "Test challenge",
+            "description": "Test Description....",
             "count_reps": True,
             "duration": 60,
             "measurement_method": "downUpMovement",
@@ -875,7 +909,7 @@ def test_update_challenge():
         f"/challenges/{challenge_id}",
         json={
             "name": "Updated Challenge",
-            "description": "Updated description",
+            "description": "Updated Description....",
             "count_reps": False,
             "measurement_method": "proximity"
         },
@@ -884,7 +918,7 @@ def test_update_challenge():
     assert update_response.status_code == 200
     updated_challenge = update_response.json()
     assert updated_challenge["name"] == "Updated Challenge"
-    assert updated_challenge["description"] == "Updated description"
+    assert updated_challenge["description"] == "Updated Description...."
     assert updated_challenge["count_reps"] is False
     assert updated_challenge["duration"] is None
     assert updated_challenge["measurement_method"] == "proximity"
@@ -893,7 +927,7 @@ def test_update_challenge():
 def test_delete_challenge():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     category_id = category_response.json()["id"]
@@ -902,7 +936,9 @@ def test_delete_challenge():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -913,7 +949,7 @@ def test_delete_challenge():
         "/challenges/",
         json={
             "name": f"Challenge-{uuid.uuid4()}",
-            "description": "Test challenge",
+            "description": "Test Description....",
             "count_reps": True,
             "duration": 60,
             "measurement_method": "proximity",
@@ -937,7 +973,7 @@ def test_create_challenge_with_invalid_exercise():
         "/challenges/",
         json={
             "name": f"Challenge-{uuid.uuid4()}",
-            "description": "Test challenge",
+            "description": "Test Description....",
             "count_reps": True,
             "duration": 60,
             "measurement_method": "proximity",
@@ -952,7 +988,7 @@ def test_create_challenge_with_invalid_exercise():
 def test_get_challenges_by_exercise():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     category_id = category_response.json()["id"]
@@ -961,7 +997,9 @@ def test_get_challenges_by_exercise():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -973,7 +1011,7 @@ def test_get_challenges_by_exercise():
             "/challenges/",
             json={
                 "name": f"Challenge-{uuid.uuid4()}",
-                "description": "Test challenge",
+                "description": "Test Description....",
                 "count_reps": True,
                 "duration": 60,
                 "measurement_method": "proximity",
@@ -993,7 +1031,7 @@ def test_get_challenges_by_exercise():
 def test_delete_exercise_deletes_challenges():
     category_response = client.post(
         "/categories/",
-        json={"name": f"Category-{uuid.uuid4()}", "description": "Test category"},
+        json={"name": f"Category-{uuid.uuid4()}", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY}
     )
     category_id = category_response.json()["id"]
@@ -1002,7 +1040,9 @@ def test_delete_exercise_deletes_challenges():
         "/exercises/",
         json={
             "name": f"Exercise-{uuid.uuid4()}",
-            "description": "Test exercise",
+            "description": "Test Description....",
+             "video_url": "https://example.com/jumprope.mp4",
+            "image_url": "https://example.com/jumprope.jpg",
             "category_id": category_id
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -1013,7 +1053,7 @@ def test_delete_exercise_deletes_challenges():
         "/challenges/",
         json={
             "name": f"Challenge-{uuid.uuid4()}",
-            "description": "Test challenge",
+            "description": "Test Description....",
             "count_reps": True,
             "duration": 60,
             "measurement_method": "proximity",
@@ -1053,7 +1093,7 @@ def test_read_access_with_full_access_api_key():
 def test_write_access_with_readonly_api_key():
     response = client.post(
         "/categories/",
-        json={"name": "Test Category", "description": "Test Description"},
+        json={"name": "Test Category", "description": "Test Description...."},
         headers={"api_key": READONLY_API_KEY},
     )
     assert response.status_code == 403
@@ -1062,7 +1102,7 @@ def test_write_access_with_readonly_api_key():
 def test_write_access_with_full_access_api_key():
     response = client.post(
         "/categories/",
-        json={"name": "Test Category", "description": "Test Description"},
+        json={"name": "Test Category", "description": "Test Description...."},
         headers={"api_key": FULL_ACCESS_API_KEY},
     )
     assert response.status_code == 200

@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Depends
-from .dependencies import get_api_key
 from .routers import categories, exercises, workouts, challenges
 from .database import engine
 from . import models
