@@ -126,7 +126,7 @@ class MeasurementMethodEnum(str, Enum):
 class ChallengeBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     description: str = Field(..., min_length=20, max_length=500)  # ❗ Már nem Optional
-    count_reps: bool
+    #count_reps: bool
     duration: int = Field(..., ge=1, le=500)
     measurement_method: MeasurementMethodEnum
 
