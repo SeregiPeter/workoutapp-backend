@@ -349,7 +349,6 @@ def create_challenge(db: Session, challenge: schemas.ChallengeCreate):
     db_challenge = models.Challenge(
         name=challenge.name,
         description=challenge.description,  # New field
-        count_reps=challenge.count_reps,
         duration=challenge.duration,
         measurement_method=challenge.measurement_method,
         exercise_id=challenge.exercise_id
@@ -379,7 +378,6 @@ def update_challenge(db: Session, challenge_id: int, challenge_update: schemas.C
 
     db_challenge.name = challenge_update.name
     db_challenge.description = challenge_update.description
-    db_challenge.count_reps = challenge_update.count_reps
     db_challenge.duration = challenge_update.duration
     db_challenge.measurement_method = challenge_update.measurement_method
     db.commit()

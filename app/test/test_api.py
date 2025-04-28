@@ -813,7 +813,6 @@ def test_create_challenge():
         json={
             "name": f"Challenge-{uuid.uuid4()}",
             "description": "Test Description....",
-            "count_reps": True,
             "duration": 60,
             "measurement_method": "downUpMovement",
             "exercise_id": exercise_id
@@ -823,7 +822,6 @@ def test_create_challenge():
     assert challenge_response.status_code == 200
     challenge_data = challenge_response.json()
     assert challenge_data["name"].startswith("Challenge-")
-    assert challenge_data["count_reps"] is True
     assert challenge_data["duration"] == 60
     assert challenge_data["measurement_method"] == "downUpMovement"
     assert challenge_data["exercise"]["id"] == exercise_id
@@ -855,7 +853,6 @@ def test_get_challenge():
         json={
             "name": f"Challenge-{uuid.uuid4()}",
             "description": "Test Description....",
-            "count_reps": True,
             "duration": 60,
             "measurement_method": "downUpMovement",
             "exercise_id": exercise_id
@@ -896,7 +893,6 @@ def test_update_challenge():
         json={
             "name": f"Challenge-{uuid.uuid4()}",
             "description": "Test Description....",
-            "count_reps": True,
             "duration": 60,
             "measurement_method": "downUpMovement",
             "exercise_id": exercise_id
@@ -910,7 +906,6 @@ def test_update_challenge():
         json={
             "name": "Updated Challenge",
             "description": "Updated Description....",
-            "count_reps": False,
             "measurement_method": "proximity"
         },
         headers={"api_key": FULL_ACCESS_API_KEY}
@@ -919,7 +914,6 @@ def test_update_challenge():
     updated_challenge = update_response.json()
     assert updated_challenge["name"] == "Updated Challenge"
     assert updated_challenge["description"] == "Updated Description...."
-    assert updated_challenge["count_reps"] is False
     assert updated_challenge["duration"] is None
     assert updated_challenge["measurement_method"] == "proximity"
 
@@ -950,7 +944,6 @@ def test_delete_challenge():
         json={
             "name": f"Challenge-{uuid.uuid4()}",
             "description": "Test Description....",
-            "count_reps": True,
             "duration": 60,
             "measurement_method": "proximity",
             "exercise_id": exercise_id
@@ -974,7 +967,6 @@ def test_create_challenge_with_invalid_exercise():
         json={
             "name": f"Challenge-{uuid.uuid4()}",
             "description": "Test Description....",
-            "count_reps": True,
             "duration": 60,
             "measurement_method": "proximity",
             "exercise_id": 999999
@@ -1012,7 +1004,6 @@ def test_get_challenges_by_exercise():
             json={
                 "name": f"Challenge-{uuid.uuid4()}",
                 "description": "Test Description....",
-                "count_reps": True,
                 "duration": 60,
                 "measurement_method": "proximity",
                 "exercise_id": exercise_id
@@ -1054,7 +1045,6 @@ def test_delete_exercise_deletes_challenges():
         json={
             "name": f"Challenge-{uuid.uuid4()}",
             "description": "Test Description....",
-            "count_reps": True,
             "duration": 60,
             "measurement_method": "proximity",
             "exercise_id": exercise_id
