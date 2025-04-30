@@ -1,4 +1,4 @@
-from fastapi import Request, HTTPException, Response
+from fastapi import Request
 from fastapi.responses import JSONResponse
 import os
 from dotenv import load_dotenv
@@ -7,6 +7,7 @@ load_dotenv()
 
 READONLY_API_KEY = os.getenv("API_KEY_READONLY").strip()
 FULL_ACCESS_API_KEY = os.getenv("API_KEY_FULL_ACCESS").strip()
+
 
 async def api_key_middleware(request: Request, call_next):
     if request.method == "OPTIONS":
@@ -35,5 +36,5 @@ async def api_key_middleware(request: Request, call_next):
             content={"detail": "Invalid API key or insufficient permissions!"},
         )
 
-    response.headers["Access-Control-Allow-Origin"] = "*"  # CORS beállítás
+    response.headers["Access-Control-Allow-Origin"] = "*"
     return response

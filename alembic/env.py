@@ -24,7 +24,6 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL.startswith("mysql://"):
     DATABASE_URL = DATABASE_URL.replace("mysql://", "mysql+pymysql://", 1)
 
-# 💡 Átadjuk az URL-t manuálisan az Alembic confignak
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # add your model's MetaData object here

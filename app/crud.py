@@ -5,8 +5,9 @@ from . import models, schemas
 
 # ----------- CATEGORY METHODS -----------
 
+
 def create_category(db: Session, category: schemas.CategoryCreate):
-    db_category = models.Category(name=category.name, description = category.description)
+    db_category = models.Category(name=category.name, description=category.description)
     db.add(db_category)
     try:
         db.commit()
@@ -16,17 +17,26 @@ def create_category(db: Session, category: schemas.CategoryCreate):
         db.rollback()
         raise HTTPException(status_code=400, detail="Category name already exists.")
 
+
 def get_category_by_id(db: Session, category_id: int):
-    category = db.query(models.Category).filter(models.Category.id == category_id).first()
+    category = (
+        db.query(models.Category).filter(models.Category.id == category_id).first()
+    )
     if not category:
         raise HTTPException(status_code=404, detail="Category not found.")
     return category
 
+
 def get_all_categories(db: Session):
     return db.query(models.Category).all()
 
-def update_category(db: Session, category_id: int, category_update: schemas.CategoryBase):
-    db_category = db.query(models.Category).filter(models.Category.id == category_id).first()
+
+def update_category(
+    db: Session, category_id: int, category_update: schemas.CategoryBase
+):
+    db_category = (
+        db.query(models.Category).filter(models.Category.id == category_id).first()
+    )
     if not db_category:
         raise HTTPException(status_code=404, detail="Category not found.")
 
@@ -36,8 +46,11 @@ def update_category(db: Session, category_id: int, category_update: schemas.Cate
     db.refresh(db_category)
     return db_category
 
+
 def delete_category(db: Session, category_id: int):
-    db_category = db.query(models.Category).filter(models.Category.id == category_id).first()
+    db_category = (
+        db.query(models.Category).filter(models.Category.id == category_id).first()
+    )
     if not db_category:
         raise HTTPException(status_code=404, detail="Category not found.")
 
@@ -45,10 +58,16 @@ def delete_category(db: Session, category_id: int):
     db.commit()
     return {"message": "Category has been deleted."}
 
+
 # ----------- EXERCISE METHODS -----------
 
+
 def create_exercise(db: Session, exercise: schemas.ExerciseCreate):
-    category = db.query(models.Category).filter(models.Category.id == exercise.category_id).first()
+    category = (
+        db.query(models.Category)
+        .filter(models.Category.id == exercise.category_id)
+        .first()
+    )
     if not category:
         raise HTTPException(status_code=400, detail="Category not found.")
 
@@ -58,7 +77,7 @@ def create_exercise(db: Session, exercise: schemas.ExerciseCreate):
         video_url=exercise.video_url,
         image_url=exercise.image_url,
         category_id=exercise.category_id,
-        duration_based=exercise.duration_based
+        duration_based=exercise.duration_based,
     )
     db.add(db_exercise)
     try:
@@ -68,6 +87,7 @@ def create_exercise(db: Session, exercise: schemas.ExerciseCreate):
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=400, detail="Exercise name already exists.")
+
 
 def get_exercise_by_id(db: Session, exercise_id: int):
     exercise = (
@@ -91,8 +111,9 @@ def get_exercise_by_id(db: Session, exercise_id: int):
         workouts=[
             schemas.WorkoutShort(id=we.workout.id, name=we.workout.name)
             for we in exercise.workouts
-        ]
+        ],
     )
+
 
 def get_all_exercises(db: Session):
     exercises = (
@@ -114,13 +135,18 @@ def get_all_exercises(db: Session):
             workouts=[
                 schemas.WorkoutShort(id=we.workout.id, name=we.workout.name)
                 for we in exercise.workouts
-            ]
+            ],
         )
         for exercise in exercises
     ]
 
-def update_exercise(db: Session, exercise_id: int, exercise_update: schemas.ExerciseUpdate):
-    db_exercise = db.query(models.Exercise).filter(models.Exercise.id == exercise_id).first()
+
+def update_exercise(
+    db: Session, exercise_id: int, exercise_update: schemas.ExerciseUpdate
+):
+    db_exercise = (
+        db.query(models.Exercise).filter(models.Exercise.id == exercise_id).first()
+    )
     print(db_exercise)
     if not db_exercise:
         raise HTTPException(status_code=404, detail="Exercise not found.")
@@ -135,13 +161,14 @@ def update_exercise(db: Session, exercise_id: int, exercise_update: schemas.Exer
         db_exercise.image_url = exercise_update.image_url
     if exercise_update.category_id is not None:
         db_exercise.category_id = exercise_update.category_id
-    
+
     db.commit()
     db.refresh(db_exercise)
-    
+
     workouts = [
         schemas.WorkoutShort(id=we.workout.id, name=we.workout.name)
-        for we in db_exercise.workouts if we.workout is not None
+        for we in db_exercise.workouts
+        if we.workout is not None
     ]
 
     return schemas.Exercise(
@@ -152,12 +179,14 @@ def update_exercise(db: Session, exercise_id: int, exercise_update: schemas.Exer
         image_url=db_exercise.image_url,
         duration_based=db_exercise.duration_based,
         category=db_exercise.category,
-        workouts=workouts
+        workouts=workouts,
     )
 
 
 def delete_exercise(db: Session, exercise_id: int):
-    db_exercise = db.query(models.Exercise).filter(models.Exercise.id == exercise_id).first()
+    db_exercise = (
+        db.query(models.Exercise).filter(models.Exercise.id == exercise_id).first()
+    )
     if not db_exercise:
         raise HTTPException(status_code=404, detail="Exercise not found.")
 
@@ -165,7 +194,9 @@ def delete_exercise(db: Session, exercise_id: int):
     db.commit()
     return {"message": "The exercise has been deleted."}
 
+
 # ----------- WORKOUT METHODS -----------
+
 
 def create_workout(db: Session, workout: schemas.WorkoutCreate):
     db_workout = models.Workout(name=workout.name)
@@ -175,18 +206,24 @@ def create_workout(db: Session, workout: schemas.WorkoutCreate):
 
     workout_exercises = []
     for we in workout.exercises:
-        exercise = db.query(models.Exercise).filter(models.Exercise.id == we.exercise_id).first()
+        exercise = (
+            db.query(models.Exercise)
+            .filter(models.Exercise.id == we.exercise_id)
+            .first()
+        )
         if not exercise:
             db.rollback()
-            raise HTTPException(status_code=400, detail=f"Exercise ID {we.exercise_id} not found.")
+            raise HTTPException(
+                status_code=400, detail=f"Exercise ID {we.exercise_id} not found."
+            )
         workout_exercise = models.WorkoutExercise(
             workout_id=db_workout.id,
             exercise_id=we.exercise_id,
             sets=we.sets,
             reps=we.reps,
             duration=we.duration,
-            rest_time_between = we.rest_time_between,
-            rest_time_after = we.rest_time_after
+            rest_time_between=we.rest_time_between,
+            rest_time_after=we.rest_time_after,
         )
         db.add(workout_exercise)
         workout_exercises.append(workout_exercise)
@@ -196,7 +233,7 @@ def create_workout(db: Session, workout: schemas.WorkoutCreate):
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=400, detail="Error during workout creation.")
-    
+
     db.refresh(db_workout)
     return schemas.Workout(
         id=db_workout.id,
@@ -213,11 +250,12 @@ def create_workout(db: Session, workout: schemas.WorkoutCreate):
                 reps=we.reps,
                 duration=we.duration,
                 rest_time_between=we.rest_time_between,
-                rest_time_after=we.rest_time_after
+                rest_time_after=we.rest_time_after,
             )
             for we in workout_exercises
-        ]
+        ],
     )
+
 
 def get_workout_by_id(db: Session, workout_id: int):
     workout = db.query(models.Workout).filter(models.Workout.id == workout_id).first()
@@ -239,41 +277,45 @@ def get_workout_by_id(db: Session, workout_id: int):
                 reps=we.reps,
                 duration=we.duration,
                 rest_time_between=we.rest_time_between,
-                rest_time_after=we.rest_time_after
+                rest_time_after=we.rest_time_after,
             )
             for we in workout.exercises
-        ]
+        ],
     )
+
 
 def get_all_workouts(db: Session):
     workouts = db.query(models.Workout).order_by(models.Workout.id).all()
-    
+
     return [
         schemas.Workout(
             id=workout.id,
             name=workout.name,
             exercises=[
                 schemas.WorkoutExerciseDetail(
-                id=we.exercise.id,
-                name=we.exercise.name,
-                description=we.exercise.description,
-                video_url=we.exercise.video_url,
-                image_url=we.exercise.image_url,
-                duration_based=we.exercise.duration_based,
-                sets=we.sets,
-                reps=we.reps,
-                duration=we.duration,
-                rest_time_between=we.rest_time_between,
-                rest_time_after=we.rest_time_after
-            ) for we in workout.exercises
-            ]
+                    id=we.exercise.id,
+                    name=we.exercise.name,
+                    description=we.exercise.description,
+                    video_url=we.exercise.video_url,
+                    image_url=we.exercise.image_url,
+                    duration_based=we.exercise.duration_based,
+                    sets=we.sets,
+                    reps=we.reps,
+                    duration=we.duration,
+                    rest_time_between=we.rest_time_between,
+                    rest_time_after=we.rest_time_after,
+                )
+                for we in workout.exercises
+            ],
         )
         for workout in workouts
     ]
 
 
 def update_workout(db: Session, workout_id: int, workout_update: schemas.WorkoutCreate):
-    db_workout = db.query(models.Workout).filter(models.Workout.id == workout_id).first()
+    db_workout = (
+        db.query(models.Workout).filter(models.Workout.id == workout_id).first()
+    )
     if not db_workout:
         raise HTTPException(status_code=404, detail="Workout not found.")
 
@@ -281,21 +323,30 @@ def update_workout(db: Session, workout_id: int, workout_update: schemas.Workout
         db_workout.name = workout_update.name
 
     if workout_update.exercises is not None:
-        db.query(models.WorkoutExercise).filter(models.WorkoutExercise.workout_id == workout_id).delete()
+        db.query(models.WorkoutExercise).filter(
+            models.WorkoutExercise.workout_id == workout_id
+        ).delete()
 
         for we in workout_update.exercises:
-            exercise = db.query(models.Exercise).filter(models.Exercise.id == we.exercise_id).first()
+            exercise = (
+                db.query(models.Exercise)
+                .filter(models.Exercise.id == we.exercise_id)
+                .first()
+            )
             if not exercise:
                 db.rollback()
-                raise HTTPException(status_code=400, detail=f"Exercise ID {we.exercise_id} does not exist.")
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Exercise ID {we.exercise_id} does not exist.",
+                )
             workout_exercise = models.WorkoutExercise(
                 workout_id=workout_id,
                 exercise_id=we.exercise_id,
                 sets=we.sets,
                 reps=we.reps,
                 duration=we.duration,
-                rest_time_between = we.rest_time_between,
-                rest_time_after = we.rest_time_after
+                rest_time_between=we.rest_time_between,
+                rest_time_after=we.rest_time_after,
             )
             db.add(workout_exercise)
 
@@ -321,16 +372,19 @@ def update_workout(db: Session, workout_id: int, workout_update: schemas.Workout
                 reps=we.reps,
                 duration=we.duration,
                 rest_time_between=we.rest_time_between,
-                rest_time_after=we.rest_time_after
+                rest_time_after=we.rest_time_after,
             )
             for we in db.query(models.WorkoutExercise)
             .filter(models.WorkoutExercise.workout_id == workout_id)
             .all()
-        ]
+        ],
     )
 
+
 def delete_workout(db: Session, workout_id: int):
-    db_workout = db.query(models.Workout).filter(models.Workout.id == workout_id).first()
+    db_workout = (
+        db.query(models.Workout).filter(models.Workout.id == workout_id).first()
+    )
     if not db_workout:
         raise HTTPException(status_code=404, detail="Workout not found.")
 
@@ -341,8 +395,13 @@ def delete_workout(db: Session, workout_id: int):
 
 # ----------- CHALLENGE METHODS -----------
 
+
 def create_challenge(db: Session, challenge: schemas.ChallengeCreate):
-    exercise = db.query(models.Exercise).filter(models.Exercise.id == challenge.exercise_id).first()
+    exercise = (
+        db.query(models.Exercise)
+        .filter(models.Exercise.id == challenge.exercise_id)
+        .first()
+    )
     if not exercise:
         raise HTTPException(status_code=400, detail="Exercise does not exist.")
 
@@ -351,7 +410,7 @@ def create_challenge(db: Session, challenge: schemas.ChallengeCreate):
         description=challenge.description,  # New field
         duration=challenge.duration,
         measurement_method=challenge.measurement_method,
-        exercise_id=challenge.exercise_id
+        exercise_id=challenge.exercise_id,
     )
     db.add(db_challenge)
     try:
@@ -360,19 +419,30 @@ def create_challenge(db: Session, challenge: schemas.ChallengeCreate):
         return db_challenge
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=400, detail="Name of the challenge is already used.")
-    
+        raise HTTPException(
+            status_code=400, detail="Name of the challenge is already used."
+        )
+
+
 def get_challenge_by_id(db: Session, challenge_id: int):
-    challenge = db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
+    challenge = (
+        db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
+    )
     if not challenge:
         raise HTTPException(status_code=404, detail="Challenge not found.")
     return challenge
 
+
 def get_all_challenges(db: Session):
     return db.query(models.Challenge).order_by(models.Challenge.id).all()
 
-def update_challenge(db: Session, challenge_id: int, challenge_update: schemas.ChallengeBase):
-    db_challenge = db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
+
+def update_challenge(
+    db: Session, challenge_id: int, challenge_update: schemas.ChallengeBase
+):
+    db_challenge = (
+        db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
+    )
     if not db_challenge:
         raise HTTPException(status_code=404, detail="Challenge not found.")
 
@@ -384,8 +454,11 @@ def update_challenge(db: Session, challenge_id: int, challenge_update: schemas.C
     db.refresh(db_challenge)
     return db_challenge
 
+
 def delete_challenge(db: Session, challenge_id: int):
-    db_challenge = db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
+    db_challenge = (
+        db.query(models.Challenge).filter(models.Challenge.id == challenge_id).first()
+    )
     if not db_challenge:
         raise HTTPException(status_code=404, detail="Challenge not found.")
 
