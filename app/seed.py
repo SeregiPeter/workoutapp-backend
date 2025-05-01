@@ -71,7 +71,7 @@ def seed_data(db: Session):
         models.WorkoutExercise(workout_id=workouts[1].id, exercise_id=exercises[4].id, sets=3, reps=12, rest_time_between=15, rest_time_after=10),
         models.WorkoutExercise(workout_id=workouts[1].id, exercise_id=exercises[5].id, sets=1, reps=20, rest_time_between=0, rest_time_after=20),
         models.WorkoutExercise(workout_id=workouts[2].id, exercise_id=exercises[6].id, sets=3, duration=10, rest_time_between=5, rest_time_after=10),
-        models.WorkoutExercise(workout_id=workouts[2].id, exercise_id=exercises[7].id, sets=2, duration=15, rest_time_between=5, rest_time_after=5),
+        models.WorkoutExercise(workout_id=workouts[2].id, exercise_id=exercises[7].id, sets=2, duration=20, rest_time_between=5, rest_time_after=5),
         models.WorkoutExercise(workout_id=workouts[2].id, exercise_id=exercises[8].id, sets=4, duration=10, rest_time_between=10, rest_time_after=0),
     ]
     db.add_all(workout_exercises)
